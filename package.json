@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-davix-h2i",
+  "name": "n8n-nodes-h2i",
   "version": "1.0.0",
   "description": "Davix H2I (PixLab) community node for n8n: H2I, Image, PDF, Tools endpoints",
   "license": "MIT",
