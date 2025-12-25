@@ -8,20 +8,26 @@ function stripTrailingSlash(url: string): string {
 	return url.endsWith('/') ? url.slice(0, -1) : url;
 }
 
+function ensureLeadingSlash(path: string): string {
+	if (!path) return '/';
+	return path.startsWith('/') ? path : `/${path}`;
+}
+
 export async function davixRequest(
 	this: IExecuteFunctions,
 	options: IHttpRequestOptions,
 ): Promise<IDataObject> {
 	const creds = await this.getCredentials('davixH2IApi');
-	const baseUrl = stripTrailingSlash(String(creds.baseUrl || ''));
 
+	const baseUrl = stripTrailingSlash(String(creds.baseUrl || ''));
 	const apiKey = String(creds.apiKey || '');
+
 	if (!baseUrl) throw new Error('Missing Base URL in credentials.');
 	if (!apiKey) throw new Error('Missing API Key in credentials.');
 
 	const requestOptions: IHttpRequestOptions = {
 		...options,
-		url: `${baseUrl}${options.url}`,
+		url: `${baseUrl}${ensureLeadingSlash(String(options.url || ''))}`,
 		headers: {
 			...(options.headers || {}),
 			// PixLab accepts x-api-key
