@@ -20,7 +20,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "n8n-node build",
+    "build": "n8n-node build && npm run copy:icons",
+    "copy:icons": "node -e \"const fs=require('fs'); const path=require('path'); const src='nodes/DavixH2I/davixH2I.svg'; const dst='dist/nodes/DavixH2I/davixH2I.svg'; fs.mkdirSync(path.dirname(dst), {recursive:true}); fs.copyFileSync(src,dst); console.log('Copied icon:', src, '->', dst);\"",
     "dev": "n8n-node dev",
     "lint": "n8n-node lint",
     "lint:fix": "n8n-node lint --fix"
