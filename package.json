@@ -1,0 +1,43 @@
+{
+  "name": "n8n-nodes-davix-h2i",
+  "version": "1.0.0",
+  "description": "Davix H2I (PixLab) community node for n8n: H2I, Image, PDF, Tools endpoints",
+  "license": "MIT",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "davix",
+    "pixlab",
+    "h2i"
+  ],
+  "homepage": "https://davix.dev",
+  "author": {
+    "name": "Davix"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "n8n-node build",
+    "dev": "n8n-node dev",
+    "lint": "n8n-node lint",
+    "lint:fix": "n8n-node lint --fix"
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "^1.0.0",
+    "typescript": "^5.5.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "n8n": {
+    "credentials": [
+      "dist/credentials/DavixH2IApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/DavixH2I/DavixH2I.node.js"
+    ]
+  }
+}
