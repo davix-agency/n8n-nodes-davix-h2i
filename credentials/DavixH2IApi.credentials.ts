@@ -8,9 +8,9 @@ export class DavixH2IApi implements ICredentialType {
 			displayName: 'Base URL',
 			name: 'baseUrl',
 			type: 'string',
-			default: 'https://h2i.davix.dev',
-			placeholder: 'https://h2i.davix.dev',
-			description: 'Your PixLab API base URL (no trailing slash). Example: https://h2i.davix.dev',
+			default: 'https://pixlab.davix.dev',
+			placeholder: 'https://pixlab.davix.dev',
+			description: 'Your PixLab API base URL (no trailing slash). Example: https://pixlab.davix.dev',
 		},
 		{
 			displayName: 'API Key',
