@@ -25,7 +25,7 @@ export class DavixH2I implements INodeType {
 		icon: 'file:davixH2I.svg',
 		group: ['transform'],
 		version: 1,
-		subtitle: '={{$parameter["resource"]}}',
+		subtitle: '={{$parameter["resource"] + " • " + ($parameter["operation"] || "")}}',
 		description: 'Use Davix PixLab public API endpoints (H2I, Image, PDF, Tools).',
 		defaults: {
 			name: 'Davix H2I',
@@ -34,6 +34,9 @@ export class DavixH2I implements INodeType {
 		outputs: ['main'],
 		credentials: [{ name: 'davixH2IApi', required: true }],
 		properties: [
+			// -------------------------
+			// Resource + Operation
+			// -------------------------
 			{
 				displayName: 'Resource',
 				name: 'resource',
@@ -47,6 +50,52 @@ export class DavixH2I implements INodeType {
 				],
 			},
 
+			// H2I operation
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				default: 'render',
+				displayOptions: { show: { resource: ['h2i'] } },
+				options: [{ name: 'Render HTML → Image', value: 'render' }],
+			},
+
+			// Image operation
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				default: 'transform',
+				displayOptions: { show: { resource: ['image'] } },
+				options: [{ name: 'Transform / Convert', value: 'transform' }],
+			},
+
+			// PDF operations
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				default: 'merge',
+				displayOptions: { show: { resource: ['pdf'] } },
+				options: [
+					{ name: 'Merge', value: 'merge' },
+					{ name: 'Split', value: 'split' },
+					{ name: 'Compress', value: 'compress' },
+					{ name: 'To Images', value: 'to-images' },
+					{ name: 'Extract Images', value: 'extract-images' },
+				],
+			},
+
+			// Tools operation
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				default: 'analyze',
+				displayOptions: { show: { resource: ['tools'] } },
+				options: [{ name: 'Analyze Images', value: 'analyze' }],
+			},
+
 			// -------------------------
 			// H2I
 			// -------------------------
@@ -57,7 +106,7 @@ export class DavixH2I implements INodeType {
 				default: '',
 				required: true,
 				typeOptions: { rows: 6 },
-				displayOptions: { show: { resource: ['h2i'] } },
+				displayOptions: { show: { resource: ['h2i'], operation: ['render'] } },
 			},
 			{
 				displayName: 'CSS',
@@ -65,21 +114,21 @@ export class DavixH2I implements INodeType {
 				type: 'string',
 				default: '',
 				typeOptions: { rows: 4 },
-				displayOptions: { show: { resource: ['h2i'] } },
+				displayOptions: { show: { resource: ['h2i'], operation: ['render'] } },
 			},
 			{
 				displayName: 'Width',
 				name: 'width',
 				type: 'number',
 				default: 1000,
-				displayOptions: { show: { resource: ['h2i'] } },
+				displayOptions: { show: { resource: ['h2i'], operation: ['render'] } },
 			},
 			{
 				displayName: 'Height',
 				name: 'height',
 				type: 'number',
 				default: 1500,
-				displayOptions: { show: { resource: ['h2i'] } },
+				displayOptions: { show: { resource: ['h2i'], operation: ['render'] } },
 			},
 			{
 				displayName: 'Format',
@@ -90,21 +139,21 @@ export class DavixH2I implements INodeType {
 					{ name: 'PNG', value: 'png' },
 					{ name: 'JPEG', value: 'jpeg' },
 				],
-				displayOptions: { show: { resource: ['h2i'] } },
+				displayOptions: { show: { resource: ['h2i'], operation: ['render'] } },
 			},
 			{
 				displayName: 'Download Result as Binary',
 				name: 'downloadBinary',
 				type: 'boolean',
 				default: false,
-				displayOptions: { show: { resource: ['h2i'] } },
+				displayOptions: { show: { resource: ['h2i'], operation: ['render'] } },
 			},
 			{
 				displayName: 'Output Binary Property',
 				name: 'outputBinaryProperty',
 				type: 'string',
 				default: 'data',
-				displayOptions: { show: { resource: ['h2i'], downloadBinary: [true] } },
+				displayOptions: { show: { resource: ['h2i'], operation: ['render'], downloadBinary: [true] } },
 			},
 
 			// -------------------------
@@ -116,8 +165,9 @@ export class DavixH2I implements INodeType {
 				type: 'string',
 				default: 'data',
 				placeholder: 'data OR image1,image2',
-				description: 'Comma-separated binary property names from previous nodes (each will be sent as an `images` file).',
-				displayOptions: { show: { resource: ['image'] } },
+				description:
+					'Comma-separated binary property names from previous nodes (each will be sent as an `images` file).',
+				displayOptions: { show: { resource: ['image'], operation: ['transform'] } },
 			},
 			{
 				displayName: 'Format',
@@ -133,26 +183,44 @@ export class DavixH2I implements INodeType {
 					{ name: 'SVG', value: 'svg' },
 					{ name: 'PDF', value: 'pdf' },
 				],
-				displayOptions: { show: { resource: ['image'] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'] } },
 			},
-			{ displayName: 'Width', name: 'imageWidth', type: 'number', default: 0, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Height', name: 'imageHeight', type: 'number', default: 0, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Enlarge', name: 'enlarge', type: 'boolean', default: false, displayOptions: { show: { resource: ['image'] } } },
+			{
+				displayName: 'Width',
+				name: 'imageWidth',
+				type: 'number',
+				default: 0,
+				displayOptions: { show: { resource: ['image'], operation: ['transform'] } },
+			},
+			{
+				displayName: 'Height',
+				name: 'imageHeight',
+				type: 'number',
+				default: 0,
+				displayOptions: { show: { resource: ['image'], operation: ['transform'] } },
+			},
+			{
+				displayName: 'Enlarge',
+				name: 'enlarge',
+				type: 'boolean',
+				default: false,
+				displayOptions: { show: { resource: ['image'], operation: ['transform'] } },
+			},
 
-			{ displayName: 'Crop X', name: 'cropX', type: 'number', default: 0, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Crop Y', name: 'cropY', type: 'number', default: 0, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Crop Width', name: 'cropWidth', type: 'number', default: 0, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Crop Height', name: 'cropHeight', type: 'number', default: 0, displayOptions: { show: { resource: ['image'] } } },
+			{ displayName: 'Crop X', name: 'cropX', type: 'number', default: 0, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
+			{ displayName: 'Crop Y', name: 'cropY', type: 'number', default: 0, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
+			{ displayName: 'Crop Width', name: 'cropWidth', type: 'number', default: 0, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
+			{ displayName: 'Crop Height', name: 'cropHeight', type: 'number', default: 0, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
 
-			{ displayName: 'Rotate (degrees)', name: 'rotate', type: 'number', default: 0, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Flip Horizontal', name: 'flipH', type: 'boolean', default: false, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Flip Vertical', name: 'flipV', type: 'boolean', default: false, displayOptions: { show: { resource: ['image'] } } },
+			{ displayName: 'Rotate (degrees)', name: 'rotate', type: 'number', default: 0, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
+			{ displayName: 'Flip Horizontal', name: 'flipH', type: 'boolean', default: false, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
+			{ displayName: 'Flip Vertical', name: 'flipV', type: 'boolean', default: false, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
 
-			{ displayName: 'Target Size (KB)', name: 'targetSizeKB', type: 'number', default: 0, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Quality', name: 'quality', type: 'number', default: 82, displayOptions: { show: { resource: ['image'] } } },
-			{ displayName: 'Keep Metadata', name: 'keepMetadata', type: 'boolean', default: false, displayOptions: { show: { resource: ['image'] } } },
+			{ displayName: 'Target Size (KB)', name: 'targetSizeKB', type: 'number', default: 0, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
+			{ displayName: 'Quality', name: 'quality', type: 'number', default: 82, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
+			{ displayName: 'Keep Metadata', name: 'keepMetadata', type: 'boolean', default: false, displayOptions: { show: { resource: ['image'], operation: ['transform'] } } },
 
-			// PDF-only options
+			// PDF-only options for Image endpoint (format=pdf)
 			{
 				displayName: 'PDF Mode',
 				name: 'pdfMode',
@@ -162,7 +230,7 @@ export class DavixH2I implements INodeType {
 					{ name: 'Single', value: 'single' },
 					{ name: 'Multi', value: 'multi' },
 				],
-				displayOptions: { show: { resource: ['image'], imageFormat: ['pdf'] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'], imageFormat: ['pdf'] } },
 			},
 			{
 				displayName: 'PDF Page Size',
@@ -174,7 +242,7 @@ export class DavixH2I implements INodeType {
 					{ name: 'A4', value: 'a4' },
 					{ name: 'Letter', value: 'letter' },
 				],
-				displayOptions: { show: { resource: ['image'], imageFormat: ['pdf'] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'], imageFormat: ['pdf'] } },
 			},
 			{
 				displayName: 'PDF Orientation',
@@ -185,14 +253,14 @@ export class DavixH2I implements INodeType {
 					{ name: 'Portrait', value: 'portrait' },
 					{ name: 'Landscape', value: 'landscape' },
 				],
-				displayOptions: { show: { resource: ['image'], imageFormat: ['pdf'] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'], imageFormat: ['pdf'] } },
 			},
 			{
 				displayName: 'PDF Margin',
 				name: 'pdfMargin',
 				type: 'number',
 				default: 0,
-				displayOptions: { show: { resource: ['image'], imageFormat: ['pdf'] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'], imageFormat: ['pdf'] } },
 			},
 			{
 				displayName: 'PDF Embed Format',
@@ -203,14 +271,14 @@ export class DavixH2I implements INodeType {
 					{ name: 'PNG', value: 'png' },
 					{ name: 'JPEG', value: 'jpeg' },
 				],
-				displayOptions: { show: { resource: ['image'], imageFormat: ['pdf'] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'], imageFormat: ['pdf'] } },
 			},
 			{
 				displayName: 'PDF JPEG Quality',
 				name: 'pdfJpegQuality',
 				type: 'number',
 				default: 85,
-				displayOptions: { show: { resource: ['image'], imageFormat: ['pdf'] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'], imageFormat: ['pdf'] } },
 			},
 
 			{
@@ -218,40 +286,27 @@ export class DavixH2I implements INodeType {
 				name: 'imageDownloadBinary',
 				type: 'boolean',
 				default: false,
-				displayOptions: { show: { resource: ['image'] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'] } },
 			},
 			{
 				displayName: 'Output Binary Property',
 				name: 'imageOutputBinaryProperty',
 				type: 'string',
 				default: 'data',
-				displayOptions: { show: { resource: ['image'], imageDownloadBinary: [true] } },
+				displayOptions: { show: { resource: ['image'], operation: ['transform'], imageDownloadBinary: [true] } },
 			},
 
 			// -------------------------
 			// PDF
 			// -------------------------
 			{
-				displayName: 'Action',
-				name: 'pdfAction',
-				type: 'options',
-				default: 'merge',
-				options: [
-					{ name: 'Merge', value: 'merge' },
-					{ name: 'Split', value: 'split' },
-					{ name: 'Compress', value: 'compress' },
-					{ name: 'To Images', value: 'to-images' },
-					{ name: 'Extract Images', value: 'extract-images' },
-				],
-				displayOptions: { show: { resource: ['pdf'] } },
-			},
-			{
 				displayName: 'Input Binary Properties',
 				name: 'pdfBinaryProps',
 				type: 'string',
 				default: 'data',
 				placeholder: 'data OR pdf1,pdf2',
-				description: 'Comma-separated binary property names (each will be sent as a `files` PDF). For merge, provide multiple.',
+				description:
+					'Comma-separated binary property names (each will be sent as a `files` PDF). For merge, provide multiple.',
 				displayOptions: { show: { resource: ['pdf'] } },
 			},
 			{
@@ -259,7 +314,7 @@ export class DavixH2I implements INodeType {
 				name: 'sortByName',
 				type: 'boolean',
 				default: false,
-				displayOptions: { show: { resource: ['pdf'], pdfAction: ['merge'] } },
+				displayOptions: { show: { resource: ['pdf'], operation: ['merge'] } },
 			},
 			{
 				displayName: 'Ranges',
@@ -267,14 +322,14 @@ export class DavixH2I implements INodeType {
 				type: 'string',
 				default: '',
 				placeholder: '1-3,4-5',
-				displayOptions: { show: { resource: ['pdf'], pdfAction: ['split'] } },
+				displayOptions: { show: { resource: ['pdf'], operation: ['split'] } },
 			},
 			{
 				displayName: 'Prefix',
 				name: 'prefix',
 				type: 'string',
 				default: 'split_',
-				displayOptions: { show: { resource: ['pdf'], pdfAction: ['split'] } },
+				displayOptions: { show: { resource: ['pdf'], operation: ['split'] } },
 			},
 			{
 				displayName: 'Pages',
@@ -282,7 +337,7 @@ export class DavixH2I implements INodeType {
 				type: 'string',
 				default: 'all',
 				placeholder: 'all OR 1-3,5,7',
-				displayOptions: { show: { resource: ['pdf'], pdfAction: ['to-images', 'extract-images'] } },
+				displayOptions: { show: { resource: ['pdf'], operation: ['to-images', 'extract-images'] } },
 			},
 			{
 				displayName: 'To Format',
@@ -294,15 +349,15 @@ export class DavixH2I implements INodeType {
 					{ name: 'JPEG', value: 'jpeg' },
 					{ name: 'WebP', value: 'webp' },
 				],
-				displayOptions: { show: { resource: ['pdf'], pdfAction: ['to-images'] } },
+				displayOptions: { show: { resource: ['pdf'], operation: ['to-images'] } },
 			},
-			{ displayName: 'Width', name: 'pdfWidth', type: 'number', default: 0, displayOptions: { show: { resource: ['pdf'], pdfAction: ['to-images'] } } },
-			{ displayName: 'Height', name: 'pdfHeight', type: 'number', default: 0, displayOptions: { show: { resource: ['pdf'], pdfAction: ['to-images'] } } },
-			{ displayName: 'DPI', name: 'dpi', type: 'number', default: 150, displayOptions: { show: { resource: ['pdf'], pdfAction: ['to-images'] } } },
+			{ displayName: 'Width', name: 'pdfWidth', type: 'number', default: 0, displayOptions: { show: { resource: ['pdf'], operation: ['to-images'] } } },
+			{ displayName: 'Height', name: 'pdfHeight', type: 'number', default: 0, displayOptions: { show: { resource: ['pdf'], operation: ['to-images'] } } },
+			{ displayName: 'DPI', name: 'dpi', type: 'number', default: 150, displayOptions: { show: { resource: ['pdf'], operation: ['to-images'] } } },
 
 			{
 				displayName: 'Extract Image Format',
-				name: 'imageFormat',
+				name: 'extractImageFormat',
 				type: 'options',
 				default: 'png',
 				options: [
@@ -310,7 +365,7 @@ export class DavixH2I implements INodeType {
 					{ name: 'JPEG', value: 'jpeg' },
 					{ name: 'WebP', value: 'webp' },
 				],
-				displayOptions: { show: { resource: ['pdf'], pdfAction: ['extract-images'] } },
+				displayOptions: { show: { resource: ['pdf'], operation: ['extract-images'] } },
 			},
 
 			{
@@ -338,7 +393,7 @@ export class DavixH2I implements INodeType {
 				default: 'data',
 				placeholder: 'data OR img1,img2',
 				description: 'Comma-separated binary property names (each will be sent as an `images` file).',
-				displayOptions: { show: { resource: ['tools'] } },
+				displayOptions: { show: { resource: ['tools'], operation: ['analyze'] } },
 			},
 			{
 				displayName: 'Tools',
@@ -352,10 +407,22 @@ export class DavixH2I implements INodeType {
 					{ name: 'Orientation', value: 'orientation' },
 					{ name: 'Hash', value: 'hash' },
 				],
-				displayOptions: { show: { resource: ['tools'] } },
+				displayOptions: { show: { resource: ['tools'], operation: ['analyze'] } },
 			},
-			{ displayName: 'Include Raw EXIF', name: 'includeRawExif', type: 'boolean', default: false, displayOptions: { show: { resource: ['tools'] } } },
-			{ displayName: 'Palette Size', name: 'paletteSize', type: 'number', default: 5, displayOptions: { show: { resource: ['tools'] } } },
+			{
+				displayName: 'Include Raw EXIF',
+				name: 'includeRawExif',
+				type: 'boolean',
+				default: false,
+				displayOptions: { show: { resource: ['tools'], operation: ['analyze'] } },
+			},
+			{
+				displayName: 'Palette Size',
+				name: 'paletteSize',
+				type: 'number',
+				default: 5,
+				displayOptions: { show: { resource: ['tools'], operation: ['analyze'] } },
+			},
 			{
 				displayName: 'Hash Type',
 				name: 'hashType',
@@ -366,7 +433,7 @@ export class DavixH2I implements INodeType {
 					{ name: 'MD5', value: 'md5' },
 					{ name: 'SHA1', value: 'sha1' },
 				],
-				displayOptions: { show: { resource: ['tools'] } },
+				displayOptions: { show: { resource: ['tools'], operation: ['analyze'] } },
 			},
 		],
 	};
@@ -377,9 +444,12 @@ export class DavixH2I implements INodeType {
 
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			const resource = this.getNodeParameter('resource', itemIndex) as Resource;
+			const operation = this.getNodeParameter('operation', itemIndex) as string;
 
 			// ---- H2I (JSON)
 			if (resource === 'h2i') {
+				if (operation !== 'render') throw new Error(`Unsupported H2I operation: ${operation}`);
+
 				const body = {
 					html: this.getNodeParameter('html', itemIndex) as string,
 					css: this.getNodeParameter('css', itemIndex) as string,
@@ -396,16 +466,19 @@ export class DavixH2I implements INodeType {
 				});
 
 				const downloadBinary = this.getNodeParameter('downloadBinary', itemIndex) as boolean;
-				if (downloadBinary && typeof response.url === 'string') {
+				if (downloadBinary && typeof (response as any).url === 'string') {
 					const binName = this.getNodeParameter('outputBinaryProperty', itemIndex) as string;
-					const dl = await downloadToBinary.call(this, response.url, `h2i.${body.format === 'jpeg' ? 'jpg' : 'png'}`);
+					const dl = await downloadToBinary.call(
+						this,
+						String((response as any).url),
+						`h2i.${body.format === 'jpeg' ? 'jpg' : 'png'}`,
+					);
 
 					const binary = await this.helpers.prepareBinaryData(dl.data, dl.fileName, dl.mimeType);
-					out.push({ json: response, binary: { [binName]: binary } });
+					out.push({ json: response as any, binary: { [binName]: binary } });
 				} else {
-					out.push({ json: response });
+					out.push({ json: response as any });
 				}
-
 				continue;
 			}
 
@@ -415,7 +488,11 @@ export class DavixH2I implements INodeType {
 				propList: string,
 				formData: Record<string, any>,
 			) => {
-				const names = propList.split(',').map((s) => s.trim()).filter(Boolean);
+				const names = propList
+					.split(',')
+					.map((s) => s.trim())
+					.filter(Boolean);
+
 				if (names.length === 0) throw new Error('No binary property names provided.');
 
 				for (const name of names) {
@@ -424,7 +501,6 @@ export class DavixH2I implements INodeType {
 					const fileName = meta?.fileName ?? `${fieldName}-${name}`;
 					const mimeType = meta?.mimeType;
 
-					// n8n request helper supports this shape for multipart file upload
 					formData[fieldName] = formData[fieldName] || [];
 					formData[fieldName].push({
 						value: buffer,
@@ -438,15 +514,17 @@ export class DavixH2I implements INodeType {
 
 			// ---- IMAGE (multipart)
 			if (resource === 'image') {
+				if (operation !== 'transform') throw new Error(`Unsupported Image operation: ${operation}`);
+
 				const imageBinaryProps = this.getNodeParameter('imageBinaryProps', itemIndex) as string;
-
 				const format = this.getNodeParameter('imageFormat', itemIndex) as string;
-				const formData: Record<string, any> = {};
 
+				const formData: Record<string, any> = {};
 				await attachFiles('images', imageBinaryProps, formData);
 
 				// core params
 				formData.format = format;
+
 				const w = this.getNodeParameter('imageWidth', itemIndex) as number;
 				const h = this.getNodeParameter('imageHeight', itemIndex) as number;
 				if (w) formData.width = String(w);
@@ -470,6 +548,7 @@ export class DavixH2I implements INodeType {
 
 				const targetSizeKB = this.getNodeParameter('targetSizeKB', itemIndex) as number;
 				if (targetSizeKB) formData.targetSizeKB = String(targetSizeKB);
+
 				formData.quality = String(this.getNodeParameter('quality', itemIndex) as number);
 				formData.keepMetadata = toBoolString(this.getNodeParameter('keepMetadata', itemIndex));
 
@@ -495,10 +574,8 @@ export class DavixH2I implements INodeType {
 				if (downloadBinary) {
 					const binName = this.getNodeParameter('imageOutputBinaryProperty', itemIndex) as string;
 
-					// PixLab returns either url or results[] with urls (depending on implementation),
-					// so we support both.
 					const urls: string[] = [];
-					if (typeof (response as any).url === 'string') urls.push((response as any).url);
+					if (typeof (response as any).url === 'string') urls.push(String((response as any).url));
 					if (Array.isArray((response as any).results)) {
 						for (const r of (response as any).results) {
 							if (r?.url) urls.push(String(r.url));
@@ -510,12 +587,12 @@ export class DavixH2I implements INodeType {
 						const ext = format === 'jpeg' ? 'jpg' : format;
 						const dl = await downloadToBinary.call(this, firstUrl, `pixlab-image.${ext}`);
 						const binary = await this.helpers.prepareBinaryData(dl.data, dl.fileName, dl.mimeType);
-						out.push({ json: response, binary: { [binName]: binary } });
+						out.push({ json: response as any, binary: { [binName]: binary } });
 					} else {
-						out.push({ json: response });
+						out.push({ json: response as any });
 					}
 				} else {
-					out.push({ json: response });
+					out.push({ json: response as any });
 				}
 
 				continue;
@@ -523,9 +600,9 @@ export class DavixH2I implements INodeType {
 
 			// ---- PDF (multipart)
 			if (resource === 'pdf') {
-				const action = this.getNodeParameter('pdfAction', itemIndex) as PdfAction;
-				const pdfBinaryProps = this.getNodeParameter('pdfBinaryProps', itemIndex) as string;
+				const action = operation as PdfAction;
 
+				const pdfBinaryProps = this.getNodeParameter('pdfBinaryProps', itemIndex) as string;
 				const formData: Record<string, any> = {};
 				await attachFiles('files', pdfBinaryProps, formData);
 
@@ -534,22 +611,27 @@ export class DavixH2I implements INodeType {
 				if (action === 'merge') {
 					formData.sortByName = toBoolString(this.getNodeParameter('sortByName', itemIndex));
 				}
+
 				if (action === 'split') {
 					formData.ranges = this.getNodeParameter('ranges', itemIndex) as string;
 					formData.prefix = this.getNodeParameter('prefix', itemIndex) as string;
 				}
+
 				if (action === 'to-images') {
 					formData.pages = this.getNodeParameter('pages', itemIndex) as string;
 					formData.toFormat = this.getNodeParameter('toFormat', itemIndex) as string;
+
 					const w = this.getNodeParameter('pdfWidth', itemIndex) as number;
 					const h = this.getNodeParameter('pdfHeight', itemIndex) as number;
 					if (w) formData.width = String(w);
 					if (h) formData.height = String(h);
+
 					formData.dpi = String(this.getNodeParameter('dpi', itemIndex) as number);
 				}
+
 				if (action === 'extract-images') {
 					formData.pages = this.getNodeParameter('pages', itemIndex) as string;
-					formData.imageFormat = this.getNodeParameter('imageFormat', itemIndex) as string;
+					formData.imageFormat = this.getNodeParameter('extractImageFormat', itemIndex) as string;
 				}
 
 				const response = await davixRequest.call(this, {
@@ -564,7 +646,7 @@ export class DavixH2I implements INodeType {
 					const binName = this.getNodeParameter('pdfOutputBinaryProperty', itemIndex) as string;
 
 					const urls: string[] = [];
-					if (typeof (response as any).url === 'string') urls.push((response as any).url);
+					if (typeof (response as any).url === 'string') urls.push(String((response as any).url));
 					if (Array.isArray((response as any).results)) {
 						for (const r of (response as any).results) {
 							if (r?.url) urls.push(String(r.url));
@@ -575,12 +657,12 @@ export class DavixH2I implements INodeType {
 						const firstUrl = urls[0];
 						const dl = await downloadToBinary.call(this, firstUrl, `pixlab-pdf-result.bin`);
 						const binary = await this.helpers.prepareBinaryData(dl.data, dl.fileName, dl.mimeType);
-						out.push({ json: response, binary: { [binName]: binary } });
+						out.push({ json: response as any, binary: { [binName]: binary } });
 					} else {
-						out.push({ json: response });
+						out.push({ json: response as any });
 					}
 				} else {
-					out.push({ json: response });
+					out.push({ json: response as any });
 				}
 
 				continue;
@@ -588,6 +670,8 @@ export class DavixH2I implements INodeType {
 
 			// ---- TOOLS (multipart)
 			if (resource === 'tools') {
+				if (operation !== 'analyze') throw new Error(`Unsupported Tools operation: ${operation}`);
+
 				const toolsBinaryProps = this.getNodeParameter('toolsBinaryProps', itemIndex) as string;
 				const formData: Record<string, any> = {};
 				await attachFiles('images', toolsBinaryProps, formData);
@@ -606,7 +690,7 @@ export class DavixH2I implements INodeType {
 					json: true,
 				} as IHttpRequestOptions);
 
-				out.push({ json: response });
+				out.push({ json: response as any });
 				continue;
 			}
 		}
