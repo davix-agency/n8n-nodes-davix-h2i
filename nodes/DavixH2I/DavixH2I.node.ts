@@ -404,6 +404,7 @@ export class DavixH2I implements INodeType {
 					name: 'pdfPageSize',
 					type: 'options',
 					default: 'auto',
+					description: 'Page size to use when exporting to PDF.',
 					options: [
 						{ name: 'Auto', value: 'auto' },
 						{ name: 'A4', value: 'a4' },
@@ -416,6 +417,7 @@ export class DavixH2I implements INodeType {
 					name: 'pdfOrientation',
 					type: 'options',
 					default: 'portrait',
+					description: 'Orientation for pages in the exported PDF.',
 					options: [
 						{ name: 'Portrait', value: 'portrait' },
 						{ name: 'Landscape', value: 'landscape' },
@@ -427,6 +429,7 @@ export class DavixH2I implements INodeType {
 					name: 'pdfMargin',
 					type: 'number',
 					default: 0,
+					description: 'Margin (in pixels) applied to the exported PDF pages.',
 					displayOptions: { show: { resource: ['image'], operation: ['pdf'] } },
 				},
 				{
@@ -434,6 +437,7 @@ export class DavixH2I implements INodeType {
 					name: 'pdfEmbedFormat',
 					type: 'options',
 					default: 'png',
+					description: 'Image format embedded inside the generated PDF.',
 					options: [
 						{ name: 'PNG', value: 'png' },
 						{ name: 'JPEG', value: 'jpeg' },
@@ -445,162 +449,217 @@ export class DavixH2I implements INodeType {
 					name: 'pdfJpegQuality',
 					type: 'number',
 					default: 85,
+					description: 'JPEG quality used when embedding images into the PDF.',
 					displayOptions: { show: { resource: ['image'], operation: ['pdf'] } },
 				},
 					{ displayName: 'Include Raw EXIF', name: 'includeRawExif', type: 'boolean', default: false, description: 'Include raw EXIF data when available.', displayOptions: { show: { resource: ['image'], operation: ['metadata'] } } },
-					{
-						displayName: 'Options',
-						name: 'options',
-						type: 'collection',
-						default: {},
-						placeholder: 'Add option',
-						description: 'Optional PixLab multitask parameters. Only selected options are sent.',
-						displayOptions: { show: { resource: ['image'], operation: ['multitask'] } },
-						options: [
-							{
-								displayName: 'Format',
-								name: 'format',
-								type: 'options',
-								default: 'webp',
-								description: 'Output format for the multitask result.',
-								options: [
-									{ name: 'JPEG', value: 'jpeg' },
-									{ name: 'PNG', value: 'png' },
-									{ name: 'WebP', value: 'webp' },
-									{ name: 'AVIF', value: 'avif' },
-									{ name: 'GIF', value: 'gif' },
-									{ name: 'SVG', value: 'svg' },
-									{ name: 'PDF', value: 'pdf' },
-								],
-							},
-							{ displayName: 'Width', name: 'width', type: 'number', default: 0, description: 'Resize width in pixels.' },
-							{ displayName: 'Height', name: 'height', type: 'number', default: 0, description: 'Resize height in pixels.' },
-							{ displayName: 'Enlarge', name: 'enlarge', type: 'boolean', default: false, description: 'Allow upscaling when resizing.' },
-							{
-								displayName: 'Normalize Orientation',
-								name: 'normalizeOrientation',
-								type: 'boolean',
-								default: false,
-								description: 'Auto-rotate based on EXIF orientation.',
-							},
-							{ displayName: 'Crop X', name: 'cropX', type: 'number', default: 0, description: 'Left offset for crop.' },
-							{ displayName: 'Crop Y', name: 'cropY', type: 'number', default: 0, description: 'Top offset for crop.' },
-							{ displayName: 'Crop Width', name: 'cropWidth', type: 'number', default: 0, description: 'Crop width in pixels.' },
-							{ displayName: 'Crop Height', name: 'cropHeight', type: 'number', default: 0, description: 'Crop height in pixels.' },
-							{ displayName: 'Background Color', name: 'backgroundColor', type: 'string', default: '', description: 'Background color used for fills or padding.' },
-							{ displayName: 'Rotate (degrees)', name: 'rotate', type: 'number', default: 0, description: 'Rotate image by degrees.' },
-							{ displayName: 'Flip Horizontal', name: 'flipH', type: 'boolean', default: false, description: 'Flip image horizontally.' },
-							{ displayName: 'Flip Vertical', name: 'flipV', type: 'boolean', default: false, description: 'Flip image vertically.' },
-							{
-								displayName: 'Color Space',
-								name: 'colorSpace',
-								type: 'options',
-								default: 'srgb',
-								description: 'Color space for processing.',
-								options: [
-									{ name: 'sRGB', value: 'srgb' },
-									{ name: 'Display P3', value: 'display-p3' },
-								],
-							},
-							{ displayName: 'Target Size (KB)', name: 'targetSizeKB', type: 'number', default: 0, description: 'Target compressed size in KB.' },
-							{ displayName: 'Quality', name: 'quality', type: 'number', default: 82, description: 'Output quality (1-100).' },
-							{ displayName: 'Keep Metadata', name: 'keepMetadata', type: 'boolean', default: false, description: 'Keep EXIF/metadata when possible.' },
-							{ displayName: 'Blur', name: 'blur', type: 'number', default: 0, description: 'Blur radius.' },
-							{ displayName: 'Sharpen', name: 'sharpen', type: 'number', default: 0, description: 'Sharpen amount.' },
-							{ displayName: 'Grayscale', name: 'grayscale', type: 'boolean', default: false, description: 'Convert to grayscale.' },
-							{ displayName: 'Sepia', name: 'sepia', type: 'boolean', default: false, description: 'Apply sepia tone.' },
-							{ displayName: 'Brightness', name: 'brightness', type: 'number', default: 0, description: 'Brightness adjustment (-100 to 100).' },
-							{ displayName: 'Contrast', name: 'contrast', type: 'number', default: 0, description: 'Contrast adjustment (-100 to 100).' },
-							{ displayName: 'Saturation', name: 'saturation', type: 'number', default: 0, description: 'Saturation adjustment (-100 to 100).' },
-							{ displayName: 'Pad', name: 'pad', type: 'number', default: 0, description: 'Uniform padding size.' },
-							{ displayName: 'Pad Color', name: 'padColor', type: 'string', default: '', description: 'Padding color (e.g. #ffffff).' },
-							{ displayName: 'Pad Top', name: 'padTop', type: 'number', default: 0, description: 'Top padding override.' },
-							{ displayName: 'Pad Right', name: 'padRight', type: 'number', default: 0, description: 'Right padding override.' },
-							{ displayName: 'Pad Bottom', name: 'padBottom', type: 'number', default: 0, description: 'Bottom padding override.' },
-							{ displayName: 'Pad Left', name: 'padLeft', type: 'number', default: 0, description: 'Left padding override.' },
-							{ displayName: 'Border Radius', name: 'borderRadius', type: 'number', default: 0, description: 'Rounded corner radius.' },
-							{ displayName: 'Border', name: 'border', type: 'number', default: 0, description: 'Border thickness in pixels.' },
-							{ displayName: 'Border Color', name: 'borderColor', type: 'string', default: '', description: 'Border color (e.g. #000000).' },
-							{ displayName: 'Background Blur', name: 'backgroundBlur', type: 'number', default: 0, description: 'Background blur radius.' },
-							{ displayName: 'Watermark Text', name: 'watermarkText', type: 'string', default: '', description: 'Text watermark content.' },
-							{ displayName: 'Watermark Font Size', name: 'watermarkFontSize', type: 'number', default: 24, description: 'Font size for text watermark.' },
-							{ displayName: 'Watermark Color', name: 'watermarkColor', type: 'string', default: '#000000', description: 'Color for text watermark.' },
-							{ displayName: 'Watermark Opacity', name: 'watermarkOpacity', type: 'number', default: 0.35, description: 'Watermark opacity (0-1).' },
-							{
-								displayName: 'Watermark Position',
-								name: 'watermarkPosition',
-								type: 'options',
-								default: 'center',
-								description: 'Placement for watermark.',
-								options: [
-									{ name: 'Center', value: 'center' },
-									{ name: 'Top Left', value: 'top-left' },
-									{ name: 'Top Right', value: 'top-right' },
-									{ name: 'Bottom Left', value: 'bottom-left' },
-									{ name: 'Bottom Right', value: 'bottom-right' },
-								],
-							},
-							{ displayName: 'Watermark Margin', name: 'watermarkMargin', type: 'number', default: 8, description: 'Margin/padding around watermark.' },
-							{ displayName: 'Watermark Scale', name: 'watermarkScale', type: 'number', default: 1, description: 'Scale factor for watermark.' },
-							{
-								displayName: 'PDF Mode',
-								name: 'pdfMode',
-								type: 'options',
-								default: 'single',
-								description: 'Single or multi-page PDF export.',
-								options: [
-									{ name: 'Single', value: 'single' },
-									{ name: 'Multi', value: 'multi' },
-								],
-							},
-							{
-								displayName: 'PDF Page Size',
-								name: 'pdfPageSize',
-								type: 'options',
-								default: 'auto',
-								description: 'Page size for PDF output.',
-								options: [
-									{ name: 'Auto', value: 'auto' },
-									{ name: 'A4', value: 'a4' },
-									{ name: 'Letter', value: 'letter' },
-								],
-							},
-							{
-								displayName: 'PDF Orientation',
-								name: 'pdfOrientation',
-								type: 'options',
-								default: 'portrait',
-								description: 'Orientation for PDF pages.',
-								options: [
-									{ name: 'Portrait', value: 'portrait' },
-									{ name: 'Landscape', value: 'landscape' },
-								],
-							},
-							{ displayName: 'PDF Margin', name: 'pdfMargin', type: 'number', default: 0, description: 'Page margin for PDF output.' },
-							{
-								displayName: 'PDF Embed Format',
-								name: 'pdfEmbedFormat',
-								type: 'options',
-								default: 'png',
-								description: 'Image format embedded in the PDF.',
-								options: [
-									{ name: 'PNG', value: 'png' },
-									{ name: 'JPEG', value: 'jpeg' },
-								],
-							},
-							{ displayName: 'PDF JPEG Quality', name: 'pdfJpegQuality', type: 'number', default: 85, description: 'JPEG quality for PDF embedding.' },
-							{ displayName: 'Include Raw EXIF', name: 'includeRawExif', type: 'boolean', default: false, description: 'Include raw EXIF data when available.' },
-						],
+				{
+					displayName: 'Actions',
+					name: 'actions',
+					type: 'multiOptions',
+					default: [],
+					description: 'Select one or more actions. Each action reveals its own parameter group below.',
+					displayOptions: { show: { resource: ['image'], operation: ['multitask'] } },
+					options: [
+						{ name: 'Format', value: 'format' },
+						{ name: 'Resize', value: 'resize' },
+						{ name: 'Crop', value: 'crop' },
+						{ name: 'Transform', value: 'transform' },
+						{ name: 'Compress', value: 'compress' },
+						{ name: 'Enhance', value: 'enhance' },
+						{ name: 'Frame', value: 'frame' },
+						{ name: 'Background', value: 'background' },
+						{ name: 'Watermark', value: 'watermark' },
+					],
+				},
+				{
+					displayName: 'Format',
+					name: 'multitaskFormat',
+					type: 'options',
+					default: 'webp',
+					description: 'Output format for the multitask result.',
+					options: [
+						{ name: 'JPEG', value: 'jpeg' },
+						{ name: 'PNG', value: 'png' },
+						{ name: 'WebP', value: 'webp' },
+						{ name: 'AVIF', value: 'avif' },
+						{ name: 'GIF', value: 'gif' },
+						{ name: 'SVG', value: 'svg' },
+						{ name: 'PDF', value: 'pdf' },
+					],
+					displayOptions: {
+						show: {
+							resource: ['image'],
+							operation: ['multitask'],
+							actions: ['format', 'resize', 'crop', 'transform', 'compress', 'enhance', 'frame', 'background', 'watermark'],
+						},
 					},
-					{
-						displayName: 'Watermark Image Binary Property',
-						name: 'watermarkBinaryProperty',
-						type: 'string',
-						default: '',
-						placeholder: 'watermarkImage',
-						description: 'Binary property containing an image watermark (used if watermark options are set).',
-						displayOptions: { show: { resource: ['image'], operation: ['multitask'] } },
+				},
+				{
+					displayName: 'Keep Metadata',
+					name: 'multitaskKeepMetadata',
+					type: 'boolean',
+					default: false,
+					description: 'Preserve EXIF/metadata for the multitask request when possible.',
+					displayOptions: {
+						show: {
+							resource: ['image'],
+							operation: ['multitask'],
+							actions: ['format', 'resize', 'crop', 'transform', 'compress', 'enhance', 'frame', 'background', 'watermark'],
+						},
 					},
+				},
+				{
+					displayName: 'Action Parameters',
+					name: 'imageActionParams',
+					type: 'fixedCollection',
+					default: {},
+					placeholder: 'Add action parameters',
+					description: 'Parameters for each selected action.',
+					typeOptions: { multipleValues: false },
+					displayOptions: { show: { resource: ['image'], operation: ['multitask'] } },
+					options: [
+						{
+							name: 'format',
+							displayName: 'Format',
+							values: [
+								{ displayName: 'Width', name: 'formatWidthMulti', type: 'number', default: 0, description: 'Resize width in pixels for format.' },
+								{ displayName: 'Height', name: 'formatHeightMulti', type: 'number', default: 0, description: 'Resize height in pixels for format.' },
+							],
+						},
+						{
+							name: 'resize',
+							displayName: 'Resize',
+							values: [
+								{ displayName: 'Width', name: 'resizeWidthMulti', type: 'number', default: 0, description: 'Resize width in pixels.' },
+								{ displayName: 'Height', name: 'resizeHeightMulti', type: 'number', default: 0, description: 'Resize height in pixels.' },
+								{ displayName: 'Enlarge', name: 'resizeEnlargeMulti', type: 'boolean', default: false, description: 'Allow upscaling when resizing.' },
+								{ displayName: 'Normalize Orientation', name: 'resizeNormalizeOrientationMulti', type: 'boolean', default: false, description: 'Auto-rotate based on EXIF orientation.' },
+							],
+						},
+						{
+							name: 'crop',
+							displayName: 'Crop',
+							values: [
+								{ displayName: 'Crop X', name: 'cropXMulti', type: 'number', default: 0, description: 'Left offset for crop.' },
+								{ displayName: 'Crop Y', name: 'cropYMulti', type: 'number', default: 0, description: 'Top offset for crop.' },
+								{ displayName: 'Crop Width', name: 'cropWidthMulti', type: 'number', default: 0, description: 'Crop width in pixels.' },
+								{ displayName: 'Crop Height', name: 'cropHeightMulti', type: 'number', default: 0, description: 'Crop height in pixels.' },
+								{ displayName: 'Normalize Orientation', name: 'cropNormalizeOrientationMulti', type: 'boolean', default: false, description: 'Auto-rotate before cropping based on EXIF orientation.' },
+								{ displayName: 'Background Color', name: 'cropBackgroundColorMulti', type: 'string', default: '', description: 'Background color used when the crop exceeds bounds.' },
+							],
+						},
+						{
+							name: 'transform',
+							displayName: 'Transform',
+							values: [
+								{ displayName: 'Rotate (degrees)', name: 'transformRotateMulti', type: 'number', default: 0, description: 'Rotate image by degrees.' },
+								{ displayName: 'Flip Horizontal', name: 'transformFlipHMulti', type: 'boolean', default: false, description: 'Flip image horizontally.' },
+								{ displayName: 'Flip Vertical', name: 'transformFlipVMulti', type: 'boolean', default: false, description: 'Flip image vertically.' },
+								{
+									displayName: 'Color Space',
+									name: 'transformColorSpaceMulti',
+									type: 'options',
+									default: 'srgb',
+									description: 'Color space to use for transforms.',
+									options: [
+										{ name: 'sRGB', value: 'srgb' },
+										{ name: 'Display P3', value: 'display-p3' },
+									],
+								},
+							],
+						},
+						{
+							name: 'compress',
+							displayName: 'Compress',
+							values: [
+								{ displayName: 'Quality', name: 'compressQualityMulti', type: 'number', default: 82, description: 'Output quality (1-100).' },
+								{ displayName: 'Target Size (KB)', name: 'compressTargetSizeKBMulti', type: 'number', default: 0, description: 'Target compressed size in KB.' },
+								{ displayName: 'Background Color', name: 'compressBackgroundColorMulti', type: 'string', default: '', description: 'Background color used for compression fills.' },
+								{
+									displayName: 'Color Space',
+									name: 'compressColorSpaceMulti',
+									type: 'options',
+									default: 'srgb',
+									description: 'Color space to use for compression.',
+									options: [
+										{ name: 'sRGB', value: 'srgb' },
+										{ name: 'Display P3', value: 'display-p3' },
+									],
+								},
+							],
+						},
+						{
+							name: 'enhance',
+							displayName: 'Enhance',
+							values: [
+								{ displayName: 'Blur', name: 'enhanceBlurMulti', type: 'number', default: 0, description: 'Blur radius.' },
+								{ displayName: 'Sharpen', name: 'enhanceSharpenMulti', type: 'number', default: 0, description: 'Sharpen amount.' },
+								{ displayName: 'Grayscale', name: 'enhanceGrayscaleMulti', type: 'boolean', default: false, description: 'Convert to grayscale.' },
+								{ displayName: 'Sepia', name: 'enhanceSepiaMulti', type: 'boolean', default: false, description: 'Apply sepia tone.' },
+								{ displayName: 'Brightness', name: 'enhanceBrightnessMulti', type: 'number', default: 0, description: 'Brightness adjustment (-100 to 100).' },
+								{ displayName: 'Contrast', name: 'enhanceContrastMulti', type: 'number', default: 0, description: 'Contrast adjustment (-100 to 100).' },
+								{ displayName: 'Saturation', name: 'enhanceSaturationMulti', type: 'number', default: 0, description: 'Saturation adjustment (-100 to 100).' },
+								{ displayName: 'Normalize Orientation', name: 'enhanceNormalizeOrientationMulti', type: 'boolean', default: false, description: 'Auto-rotate based on EXIF orientation before enhancing.' },
+							],
+						},
+						{
+							name: 'frame',
+							displayName: 'Frame',
+							values: [
+								{ displayName: 'Pad', name: 'framePadMulti', type: 'number', default: 0, description: 'Uniform padding size.' },
+								{ displayName: 'Pad Color', name: 'framePadColorMulti', type: 'string', default: '', description: 'Padding color (e.g. #ffffff).' },
+								{ displayName: 'Border', name: 'frameBorderMulti', type: 'number', default: 0, description: 'Border thickness in pixels.' },
+								{ displayName: 'Border Color', name: 'frameBorderColorMulti', type: 'string', default: '', description: 'Border color (e.g. #000000).' },
+								{ displayName: 'Border Radius', name: 'frameBorderRadiusMulti', type: 'number', default: 0, description: 'Rounded corner radius.' },
+							],
+						},
+						{
+							name: 'background',
+							displayName: 'Background',
+							values: [
+								{ displayName: 'Background Color', name: 'backgroundColorMulti', type: 'string', default: '', description: 'Background color to apply.' },
+								{ displayName: 'Background Blur', name: 'backgroundBlurMulti', type: 'number', default: 0, description: 'Blur background by this radius.' },
+								{ displayName: 'Border Radius', name: 'backgroundBorderRadiusMulti', type: 'number', default: 0, description: 'Rounded corner radius.' },
+								{ displayName: 'Pad Color', name: 'backgroundPadColorMulti', type: 'string', default: '', description: 'Padding color for background.' },
+							],
+						},
+						{
+							name: 'watermark',
+							displayName: 'Watermark',
+							values: [
+								{ displayName: 'Watermark Text', name: 'watermarkTextMulti', type: 'string', default: '', description: 'Text watermark content.' },
+								{ displayName: 'Watermark Opacity', name: 'watermarkOpacityMulti', type: 'number', default: 0.35, description: 'Watermark opacity (0-1).' },
+								{
+									displayName: 'Watermark Position',
+									name: 'watermarkPositionMulti',
+									type: 'options',
+									default: 'center',
+									description: 'Placement for watermark.',
+									options: [
+										{ name: 'Center', value: 'center' },
+										{ name: 'Top Left', value: 'top-left' },
+										{ name: 'Top Right', value: 'top-right' },
+										{ name: 'Bottom Left', value: 'bottom-left' },
+										{ name: 'Bottom Right', value: 'bottom-right' },
+									],
+								},
+								{ displayName: 'Watermark Margin', name: 'watermarkMarginMulti', type: 'number', default: 8, description: 'Margin/padding around watermark.' },
+								{ displayName: 'Watermark Scale', name: 'watermarkScaleMulti', type: 'number', default: 1, description: 'Scale factor for watermark.' },
+								{ displayName: 'Watermark Color', name: 'watermarkColorMulti', type: 'string', default: '#000000', description: 'Color for text watermark.' },
+								{ displayName: 'Watermark Font Size', name: 'watermarkFontSizeMulti', type: 'number', default: 24, description: 'Font size for text watermark.' },
+								{
+									displayName: 'Watermark Image Binary Property',
+									name: 'watermarkImageBinaryProperty',
+									type: 'string',
+									default: '',
+									placeholder: 'watermarkImage',
+									description: 'Binary property containing an image watermark (optional).',
+								},
+							],
+						},
+					],
+				},
 
 				{
 					displayName: 'Download Result(s) as Binary',
@@ -824,65 +883,135 @@ export class DavixH2I implements INodeType {
 					displayOptions: { show: { resource: ['tools'], operation: ['multitask'] } },
 				},
 				{
-					displayName: 'Options',
-					name: 'options',
-					type: 'collection',
+					displayName: 'Tool Parameters (Single)',
+					name: 'toolParametersSingle',
+					type: 'fixedCollection',
 					default: {},
-					placeholder: 'Add option',
-					description: 'Optional tool parameters (only applied when the selected tool supports them).',
+					placeholder: 'Add tool parameters',
+					description: 'Parameters for the selected tool.',
+					typeOptions: { multipleValues: false },
 					displayOptions: { show: { resource: ['tools'], operation: ['single'] } },
 					options: [
-						{ displayName: 'Include Raw EXIF', name: 'includeRawExif', type: 'boolean', default: false, description: 'Include raw EXIF data (metadata tool only).' },
-						{ displayName: 'Palette Size', name: 'paletteSize', type: 'number', default: 5, description: 'Number of colors to extract (palette tool).' },
 						{
-							displayName: 'Hash Type',
-							name: 'hashType',
-							type: 'options',
-							default: 'phash',
-							description: 'Hash algorithm to compute (hash tool).',
-							options: [
-								{ name: 'pHash', value: 'phash' },
-								{ name: 'MD5', value: 'md5' },
-								{ name: 'SHA1', value: 'sha1' },
+							name: 'metadata',
+							displayName: 'Metadata',
+							values: [{ displayName: 'Include Raw EXIF', name: 'metadataIncludeRawExifSingle', type: 'boolean', default: false, description: 'Include raw EXIF data when available.' }],
+						},
+						{
+							name: 'palette',
+							displayName: 'Palette',
+							values: [{ displayName: 'Palette Size', name: 'paletteSizeSingle', type: 'number', default: 5, description: 'Number of colors to extract.' }],
+						},
+						{
+							name: 'hash',
+							displayName: 'Hash',
+							values: [
+								{
+									displayName: 'Hash Type',
+									name: 'hashTypeSingle',
+									type: 'options',
+									default: 'phash',
+									description: 'Hash algorithm to compute.',
+									options: [
+										{ name: 'pHash', value: 'phash' },
+										{ name: 'MD5', value: 'md5' },
+										{ name: 'SHA1', value: 'sha1' },
+									],
+								},
 							],
 						},
-						{ displayName: 'Similarity Mode', name: 'similarityMode', type: 'string', default: '', description: 'Similarity mode (similarity tool).' },
-						{ displayName: 'Similarity Threshold', name: 'similarityThreshold', type: 'number', default: 0, description: 'Similarity threshold (similarity tool).' },
-						{ displayName: 'Quality Sample', name: 'qualitySample', type: 'number', default: 0, description: 'Sample size for quality analysis (quality tool).' },
-						{ displayName: 'Transparency Sample', name: 'transparencySample', type: 'number', default: 0, description: 'Sample size for transparency analysis (transparency tool).' },
-						{ displayName: 'Efficiency Format', name: 'efficiencyFormat', type: 'string', default: '', description: 'Output format for efficiency tool.' },
-						{ displayName: 'Efficiency Quality', name: 'efficiencyQuality', type: 'number', default: 0, description: 'Quality setting for efficiency tool.' },
+						{
+							name: 'similarity',
+							displayName: 'Similarity',
+							values: [
+								{ displayName: 'Similarity Mode', name: 'similarityModeSingle', type: 'string', default: '', description: 'Similarity mode.' },
+								{ displayName: 'Similarity Threshold', name: 'similarityThresholdSingle', type: 'number', default: 0, description: 'Similarity threshold.' },
+							],
+						},
+						{
+							name: 'quality',
+							displayName: 'Quality',
+							values: [{ displayName: 'Quality Sample', name: 'qualitySampleSingle', type: 'number', default: 0, description: 'Sample size for quality analysis.' }],
+						},
+						{
+							name: 'transparency',
+							displayName: 'Transparency',
+							values: [{ displayName: 'Transparency Sample', name: 'transparencySampleSingle', type: 'number', default: 0, description: 'Sample size for transparency analysis.' }],
+						},
+						{
+							name: 'efficiency',
+							displayName: 'Efficiency',
+							values: [
+								{ displayName: 'Efficiency Format', name: 'efficiencyFormatSingle', type: 'string', default: '', description: 'Output format for efficiency tool.' },
+								{ displayName: 'Efficiency Quality', name: 'efficiencyQualitySingle', type: 'number', default: 0, description: 'Quality setting for efficiency tool.' },
+							],
+						},
 					],
 				},
 				{
-					displayName: 'Options',
-					name: 'options',
-					type: 'collection',
+					displayName: 'Tool Parameters (Multitask)',
+					name: 'toolParametersMulti',
+					type: 'fixedCollection',
 					default: {},
-					placeholder: 'Add option',
-					description: 'Optional tool parameters (applied per selected tool).',
+					placeholder: 'Add tool parameters',
+					description: 'Parameters for selected tools in multitask.',
+					typeOptions: { multipleValues: false },
 					displayOptions: { show: { resource: ['tools'], operation: ['multitask'] } },
 					options: [
-						{ displayName: 'Include Raw EXIF', name: 'includeRawExif', type: 'boolean', default: false, description: 'Include raw EXIF data (metadata tool).' },
-						{ displayName: 'Palette Size', name: 'paletteSize', type: 'number', default: 5, description: 'Number of colors to extract (palette tool).' },
 						{
-							displayName: 'Hash Type',
-							name: 'hashType',
-							type: 'options',
-							default: 'phash',
-							description: 'Hash algorithm to compute (hash tool).',
-							options: [
-								{ name: 'pHash', value: 'phash' },
-								{ name: 'MD5', value: 'md5' },
-								{ name: 'SHA1', value: 'sha1' },
+							name: 'metadata',
+							displayName: 'Metadata',
+							values: [{ displayName: 'Include Raw EXIF', name: 'metadataIncludeRawExifMulti', type: 'boolean', default: false, description: 'Include raw EXIF data when available.' }],
+						},
+						{
+							name: 'palette',
+							displayName: 'Palette',
+							values: [{ displayName: 'Palette Size', name: 'paletteSizeMulti', type: 'number', default: 5, description: 'Number of colors to extract.' }],
+						},
+						{
+							name: 'hash',
+							displayName: 'Hash',
+							values: [
+								{
+									displayName: 'Hash Type',
+									name: 'hashTypeMulti',
+									type: 'options',
+									default: 'phash',
+									description: 'Hash algorithm to compute.',
+									options: [
+										{ name: 'pHash', value: 'phash' },
+										{ name: 'MD5', value: 'md5' },
+										{ name: 'SHA1', value: 'sha1' },
+									],
+								},
 							],
 						},
-						{ displayName: 'Similarity Mode', name: 'similarityMode', type: 'string', default: '', description: 'Similarity mode (similarity tool).' },
-						{ displayName: 'Similarity Threshold', name: 'similarityThreshold', type: 'number', default: 0, description: 'Similarity threshold (similarity tool).' },
-						{ displayName: 'Quality Sample', name: 'qualitySample', type: 'number', default: 0, description: 'Sample size for quality analysis (quality tool).' },
-						{ displayName: 'Transparency Sample', name: 'transparencySample', type: 'number', default: 0, description: 'Sample size for transparency analysis (transparency tool).' },
-						{ displayName: 'Efficiency Format', name: 'efficiencyFormat', type: 'string', default: '', description: 'Output format for efficiency tool.' },
-						{ displayName: 'Efficiency Quality', name: 'efficiencyQuality', type: 'number', default: 0, description: 'Quality setting for efficiency tool.' },
+						{
+							name: 'similarity',
+							displayName: 'Similarity',
+							values: [
+								{ displayName: 'Similarity Mode', name: 'similarityModeMulti', type: 'string', default: '', description: 'Similarity mode.' },
+								{ displayName: 'Similarity Threshold', name: 'similarityThresholdMulti', type: 'number', default: 0, description: 'Similarity threshold.' },
+							],
+						},
+						{
+							name: 'quality',
+							displayName: 'Quality',
+							values: [{ displayName: 'Quality Sample', name: 'qualitySampleMulti', type: 'number', default: 0, description: 'Sample size for quality analysis.' }],
+						},
+						{
+							name: 'transparency',
+							displayName: 'Transparency',
+							values: [{ displayName: 'Transparency Sample', name: 'transparencySampleMulti', type: 'number', default: 0, description: 'Sample size for transparency analysis.' }],
+						},
+						{
+							name: 'efficiency',
+							displayName: 'Efficiency',
+							values: [
+								{ displayName: 'Efficiency Format', name: 'efficiencyFormatMulti', type: 'string', default: '', description: 'Output format for efficiency tool.' },
+								{ displayName: 'Efficiency Quality', name: 'efficiencyQualityMulti', type: 'number', default: 0, description: 'Quality setting for efficiency tool.' },
+							],
+						},
 					],
 				},
 			],
@@ -1131,61 +1260,116 @@ export class DavixH2I implements INodeType {
 							setBool('includeRawExif', this.getNodeParameter('includeRawExif', itemIndex) as boolean);
 							break;
 						case 'multitask': {
-							const options = (this.getNodeParameter('options', itemIndex, {}) as IDataObject) || {};
-							const hasVal = (key: string) => Object.prototype.hasOwnProperty.call(options, key);
-							const getOpt = (key: string) => options[key];
+							const selectedActions = (this.getNodeParameter('actions', itemIndex, []) as string[]) || [];
+							if (selectedActions.length === 0) throw new Error('Select at least one action for multitask.');
 
-							if (hasVal('format')) setString('format', getOpt('format') as string);
-							if (hasVal('width')) setNumber('width', Number(getOpt('width')));
-							if (hasVal('height')) setNumber('height', Number(getOpt('height')));
-							if (hasVal('enlarge')) setBool('enlarge', Boolean(getOpt('enlarge')));
-							if (hasVal('normalizeOrientation')) setBool('normalizeOrientation', Boolean(getOpt('normalizeOrientation')));
-							if (hasVal('cropX')) setNumber('cropX', Number(getOpt('cropX')));
-							if (hasVal('cropY')) setNumber('cropY', Number(getOpt('cropY')));
-							if (hasVal('cropWidth')) setNumber('cropWidth', Number(getOpt('cropWidth')));
-							if (hasVal('cropHeight')) setNumber('cropHeight', Number(getOpt('cropHeight')));
-							if (hasVal('backgroundColor')) setString('backgroundColor', String(getOpt('backgroundColor')));
-							if (hasVal('rotate')) setNumber('rotate', Number(getOpt('rotate')));
-							if (hasVal('flipH')) setBool('flipH', Boolean(getOpt('flipH')));
-							if (hasVal('flipV')) setBool('flipV', Boolean(getOpt('flipV')));
-							if (hasVal('colorSpace')) formData.colorSpace = String(getOpt('colorSpace'));
-							if (hasVal('targetSizeKB')) setNumber('targetSizeKB', Number(getOpt('targetSizeKB')));
-							if (hasVal('quality')) setNumber('quality', Number(getOpt('quality')));
-							if (hasVal('keepMetadata')) setBool('keepMetadata', Boolean(getOpt('keepMetadata')));
-							if (hasVal('blur')) setNumber('blur', Number(getOpt('blur')));
-							if (hasVal('sharpen')) setNumber('sharpen', Number(getOpt('sharpen')));
-							if (hasVal('grayscale')) setBool('grayscale', Boolean(getOpt('grayscale')));
-							if (hasVal('sepia')) setBool('sepia', Boolean(getOpt('sepia')));
-							if (hasVal('brightness')) setNumber('brightness', Number(getOpt('brightness')));
-							if (hasVal('contrast')) setNumber('contrast', Number(getOpt('contrast')));
-							if (hasVal('saturation')) setNumber('saturation', Number(getOpt('saturation')));
-							if (hasVal('pad')) setNumber('pad', Number(getOpt('pad')));
-							if (hasVal('padTop')) setNumber('padTop', Number(getOpt('padTop')));
-							if (hasVal('padRight')) setNumber('padRight', Number(getOpt('padRight')));
-							if (hasVal('padBottom')) setNumber('padBottom', Number(getOpt('padBottom')));
-							if (hasVal('padLeft')) setNumber('padLeft', Number(getOpt('padLeft')));
-							if (hasVal('padColor')) setString('padColor', String(getOpt('padColor')));
-							if (hasVal('borderRadius')) setNumber('borderRadius', Number(getOpt('borderRadius')));
-							if (hasVal('border')) setNumber('border', Number(getOpt('border')));
-							if (hasVal('borderColor')) setString('borderColor', String(getOpt('borderColor')));
-							if (hasVal('backgroundBlur')) setNumber('backgroundBlur', Number(getOpt('backgroundBlur')));
-							if (hasVal('watermarkText')) setString('watermarkText', String(getOpt('watermarkText')));
-							if (hasVal('watermarkFontSize')) setNumber('watermarkFontSize', Number(getOpt('watermarkFontSize')));
-							if (hasVal('watermarkColor')) setString('watermarkColor', String(getOpt('watermarkColor')));
-							if (hasVal('watermarkOpacity')) setNumber('watermarkOpacity', Number(getOpt('watermarkOpacity')));
-							if (hasVal('watermarkPosition')) formData.watermarkPosition = String(getOpt('watermarkPosition'));
-							if (hasVal('watermarkMargin')) setNumber('watermarkMargin', Number(getOpt('watermarkMargin')));
-							if (hasVal('watermarkScale')) setNumber('watermarkScale', Number(getOpt('watermarkScale')));
-							if (hasVal('pdfMode')) formData.pdfMode = String(getOpt('pdfMode'));
-							if (hasVal('pdfPageSize')) formData.pdfPageSize = String(getOpt('pdfPageSize'));
-							if (hasVal('pdfOrientation')) formData.pdfOrientation = String(getOpt('pdfOrientation'));
-							if (hasVal('pdfMargin')) setNumber('pdfMargin', Number(getOpt('pdfMargin')));
-							if (hasVal('pdfEmbedFormat')) formData.pdfEmbedFormat = String(getOpt('pdfEmbedFormat'));
-							if (hasVal('pdfJpegQuality')) setNumber('pdfJpegQuality', Number(getOpt('pdfJpegQuality')));
-							if (hasVal('includeRawExif')) setBool('includeRawExif', Boolean(getOpt('includeRawExif')));
+							const setNumberOnce = (name: string, value: number) => {
+								if (value !== undefined && value !== null && value !== 0 && formData[name] === undefined) formData[name] = String(value);
+							};
+							const setStringOnce = (name: string, value: string) => {
+								if (value && formData[name] === undefined) formData[name] = value;
+							};
+							const setBoolOnce = (name: string, value: boolean) => {
+								if (value !== undefined && value !== null && formData[name] === undefined) formData[name] = toBoolString(value);
+							};
 
-							const watermarkProp = this.getNodeParameter('watermarkBinaryProperty', itemIndex, '') as string;
-							if (watermarkProp) await includeWatermarkFile(watermarkProp);
+							setStringOnce('format', this.getNodeParameter('multitaskFormat', itemIndex) as string);
+							setBoolOnce('keepMetadata', this.getNodeParameter('multitaskKeepMetadata', itemIndex) as boolean);
+
+							for (const a of selectedActions) {
+								switch (a) {
+									case 'format':
+										{
+											const params = (this.getNodeParameter('imageActionParams.format', itemIndex, {}) as IDataObject) || {};
+											setNumberOnce('width', Number(params.formatWidthMulti ?? 0));
+											setNumberOnce('height', Number(params.formatHeightMulti ?? 0));
+										}
+										break;
+									case 'resize':
+										{
+											const params = (this.getNodeParameter('imageActionParams.resize', itemIndex, {}) as IDataObject) || {};
+											setNumberOnce('width', Number(params.resizeWidthMulti ?? 0));
+											setNumberOnce('height', Number(params.resizeHeightMulti ?? 0));
+											setBoolOnce('enlarge', Boolean(params.resizeEnlargeMulti));
+											setBoolOnce('normalizeOrientation', Boolean(params.resizeNormalizeOrientationMulti));
+										}
+										break;
+									case 'crop':
+										{
+											const params = (this.getNodeParameter('imageActionParams.crop', itemIndex, {}) as IDataObject) || {};
+											setNumberOnce('cropX', Number(params.cropXMulti ?? 0));
+											setNumberOnce('cropY', Number(params.cropYMulti ?? 0));
+											setNumberOnce('cropWidth', Number(params.cropWidthMulti ?? 0));
+											setNumberOnce('cropHeight', Number(params.cropHeightMulti ?? 0));
+											setBoolOnce('normalizeOrientation', Boolean(params.cropNormalizeOrientationMulti));
+											setStringOnce('backgroundColor', String(params.cropBackgroundColorMulti ?? ''));
+										}
+										break;
+									case 'transform':
+										{
+											const params = (this.getNodeParameter('imageActionParams.transform', itemIndex, {}) as IDataObject) || {};
+											setNumberOnce('rotate', Number(params.transformRotateMulti ?? 0));
+											setBoolOnce('flipH', Boolean(params.transformFlipHMulti));
+											setBoolOnce('flipV', Boolean(params.transformFlipVMulti));
+											setStringOnce('colorSpace', String(params.transformColorSpaceMulti ?? ''));
+										}
+										break;
+									case 'compress':
+										{
+											const params = (this.getNodeParameter('imageActionParams.compress', itemIndex, {}) as IDataObject) || {};
+											setNumberOnce('quality', Number(params.compressQualityMulti ?? 0));
+											setNumberOnce('targetSizeKB', Number(params.compressTargetSizeKBMulti ?? 0));
+											setStringOnce('backgroundColor', String(params.compressBackgroundColorMulti ?? ''));
+											setStringOnce('colorSpace', String(params.compressColorSpaceMulti ?? ''));
+										}
+										break;
+									case 'enhance':
+										{
+											const params = (this.getNodeParameter('imageActionParams.enhance', itemIndex, {}) as IDataObject) || {};
+											setNumberOnce('blur', Number(params.enhanceBlurMulti ?? 0));
+											setNumberOnce('sharpen', Number(params.enhanceSharpenMulti ?? 0));
+											setBoolOnce('grayscale', Boolean(params.enhanceGrayscaleMulti));
+											setBoolOnce('sepia', Boolean(params.enhanceSepiaMulti));
+											setNumberOnce('brightness', Number(params.enhanceBrightnessMulti ?? 0));
+											setNumberOnce('contrast', Number(params.enhanceContrastMulti ?? 0));
+											setNumberOnce('saturation', Number(params.enhanceSaturationMulti ?? 0));
+											setBoolOnce('normalizeOrientation', Boolean(params.enhanceNormalizeOrientationMulti));
+										}
+										break;
+									case 'frame':
+										{
+											const params = (this.getNodeParameter('imageActionParams.frame', itemIndex, {}) as IDataObject) || {};
+											setNumberOnce('pad', Number(params.framePadMulti ?? 0));
+											setStringOnce('padColor', String(params.framePadColorMulti ?? ''));
+											setNumberOnce('border', Number(params.frameBorderMulti ?? 0));
+											setStringOnce('borderColor', String(params.frameBorderColorMulti ?? ''));
+											setNumberOnce('borderRadius', Number(params.frameBorderRadiusMulti ?? 0));
+										}
+										break;
+									case 'background':
+										{
+											const params = (this.getNodeParameter('imageActionParams.background', itemIndex, {}) as IDataObject) || {};
+											setStringOnce('backgroundColor', String(params.backgroundColorMulti ?? ''));
+											setNumberOnce('backgroundBlur', Number(params.backgroundBlurMulti ?? 0));
+											setNumberOnce('borderRadius', Number(params.backgroundBorderRadiusMulti ?? 0));
+											setStringOnce('padColor', String(params.backgroundPadColorMulti ?? ''));
+										}
+										break;
+									case 'watermark':
+										{
+											const params = (this.getNodeParameter('imageActionParams.watermark', itemIndex, {}) as IDataObject) || {};
+											setStringOnce('watermarkText', String(params.watermarkTextMulti ?? ''));
+											setNumberOnce('watermarkOpacity', Number(params.watermarkOpacityMulti ?? 0));
+											formData.watermarkPosition = formData.watermarkPosition ?? (params.watermarkPositionMulti as string);
+											setNumberOnce('watermarkMargin', Number(params.watermarkMarginMulti ?? 0));
+											setNumberOnce('watermarkScale', Number(params.watermarkScaleMulti ?? 0));
+											setStringOnce('watermarkColor', String(params.watermarkColorMulti ?? ''));
+											setNumberOnce('watermarkFontSize', Number(params.watermarkFontSizeMulti ?? 0));
+											await includeWatermarkFile(String(params.watermarkImageBinaryProperty ?? ''));
+										}
+										break;
+								}
+							}
 							break;
 						}
 					}
@@ -1358,39 +1542,67 @@ export class DavixH2I implements INodeType {
 						formData.tools = tools.join(',');
 					}
 
-					const toolOptions = (this.getNodeParameter('options', itemIndex, {}) as IDataObject) || {};
-					const hasOpt = (key: string) => Object.prototype.hasOwnProperty.call(toolOptions, key);
-					const getOpt = (key: string) => toolOptions[key];
 					const hasTool = (toolName: string) => selectedTools.includes(toolName);
+					const getParams = (path: string) => (this.getNodeParameter(path, itemIndex, {}) as IDataObject) || {};
 
 					if (hasTool('metadata')) {
-						if (hasOpt('includeRawExif')) setBool('includeRawExif', Boolean(getOpt('includeRawExif')));
+						const params =
+							action === 'single'
+								? getParams('toolParametersSingle.metadata')
+								: getParams('toolParametersMulti.metadata');
+						if (params.metadataIncludeRawExifSingle ?? params.metadataIncludeRawExifMulti)
+							setBool('includeRawExif', Boolean(params.metadataIncludeRawExifSingle ?? params.metadataIncludeRawExifMulti));
 					}
 
 					if (hasTool('palette')) {
-						if (hasOpt('paletteSize')) setNumber('paletteSize', Number(getOpt('paletteSize')));
+						const params =
+							action === 'single' ? getParams('toolParametersSingle.palette') : getParams('toolParametersMulti.palette');
+						const val = params.paletteSizeSingle ?? params.paletteSizeMulti;
+						if (val) setNumber('paletteSize', Number(val));
 					}
 
 					if (hasTool('hash')) {
-						if (hasOpt('hashType')) setString('hashType', String(getOpt('hashType')));
+						const params = action === 'single' ? getParams('toolParametersSingle.hash') : getParams('toolParametersMulti.hash');
+						const val = params.hashTypeSingle ?? params.hashTypeMulti;
+						if (val) setString('hashType', String(val));
 					}
 
 					if (hasTool('quality')) {
-						if (hasOpt('qualitySample')) setNumber('qualitySample', Number(getOpt('qualitySample')));
+						const params =
+							action === 'single' ? getParams('toolParametersSingle.quality') : getParams('toolParametersMulti.quality');
+						const val = params.qualitySampleSingle ?? params.qualitySampleMulti;
+						if (val) setNumber('qualitySample', Number(val));
 					}
 
 					if (hasTool('transparency')) {
-						if (hasOpt('transparencySample')) setNumber('transparencySample', Number(getOpt('transparencySample')));
+						const params =
+							action === 'single'
+								? getParams('toolParametersSingle.transparency')
+								: getParams('toolParametersMulti.transparency');
+						const val = params.transparencySampleSingle ?? params.transparencySampleMulti;
+						if (val) setNumber('transparencySample', Number(val));
 					}
 
 					if (hasTool('similarity')) {
-						if (hasOpt('similarityMode')) setString('similarityMode', String(getOpt('similarityMode')));
-						if (hasOpt('similarityThreshold')) setNumber('similarityThreshold', Number(getOpt('similarityThreshold')));
+						const params =
+							action === 'single'
+								? getParams('toolParametersSingle.similarity')
+								: getParams('toolParametersMulti.similarity');
+						const mode = params.similarityModeSingle ?? params.similarityModeMulti;
+						const threshold = params.similarityThresholdSingle ?? params.similarityThresholdMulti;
+						if (mode) setString('similarityMode', String(mode));
+						if (threshold) setNumber('similarityThreshold', Number(threshold));
 					}
 
 					if (hasTool('efficiency')) {
-						if (hasOpt('efficiencyFormat')) setString('efficiencyFormat', String(getOpt('efficiencyFormat')));
-						if (hasOpt('efficiencyQuality')) setNumber('efficiencyQuality', Number(getOpt('efficiencyQuality')));
+						const params =
+							action === 'single'
+								? getParams('toolParametersSingle.efficiency')
+								: getParams('toolParametersMulti.efficiency');
+						const formatVal = params.efficiencyFormatSingle ?? params.efficiencyFormatMulti;
+						const qualityVal = params.efficiencyQualitySingle ?? params.efficiencyQualityMulti;
+						if (formatVal) setString('efficiencyFormat', String(formatVal));
+						if (qualityVal) setNumber('efficiencyQuality', Number(qualityVal));
 					}
 
 					const response = await davixRequest.call(this, {
