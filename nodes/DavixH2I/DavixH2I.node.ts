@@ -948,7 +948,6 @@ export class DavixH2I implements INodeType {
 							],
 						},
 					],
-					displayOptions: { show: { resource: ['tools'], operation: ['single'], tool: ['hash'] } },
 				},
 				{
 					// Multitask tool parameters grouped to keep property keys unique
@@ -1090,7 +1089,6 @@ export class DavixH2I implements INodeType {
 							],
 						},
 					],
-					displayOptions: { show: { resource: ['tools'], operation: ['multitask'], tools: ['hash'] } },
 				},
 				{
 					displayName: 'Similarity Tool',
