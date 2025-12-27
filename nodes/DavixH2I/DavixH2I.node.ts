@@ -883,6 +883,7 @@ export class DavixH2I implements INodeType {
 					displayOptions: { show: { resource: ['tools'], operation: ['multitask'] } },
 				},
 				{
+					// Single-tool parameters grouped to keep property keys unique
 					displayName: 'Tool Parameters (Single)',
 					name: 'toolParametersSingle',
 					type: 'fixedCollection',
@@ -950,6 +951,7 @@ export class DavixH2I implements INodeType {
 					displayOptions: { show: { resource: ['tools'], operation: ['single'], tool: ['hash'] } },
 				},
 				{
+					// Multitask tool parameters grouped to keep property keys unique
 					displayName: 'Tool Parameters (Multitask)',
 					name: 'toolParametersMulti',
 					type: 'fixedCollection',
@@ -1011,126 +1013,6 @@ export class DavixH2I implements INodeType {
 							values: [
 								{ displayName: 'Efficiency Format', name: 'efficiencyFormatMulti', type: 'string', default: '', description: 'Output format for efficiency tool.' },
 								{ displayName: 'Efficiency Quality', name: 'efficiencyQualityMulti', type: 'number', default: 0, description: 'Quality setting for efficiency tool.' },
-							],
-						},
-					],
-				},
-				{
-					displayName: 'Quality Parameters (Single)',
-					name: 'qualityParametersSingle',
-					type: 'fixedCollection',
-					default: {},
-					placeholder: 'Add quality parameters',
-					description: 'Quality tool options.',
-					typeOptions: { multipleValues: false },
-					displayOptions: { show: { resource: ['tools'], operation: ['single'], tool: ['quality'] } },
-					options: [
-						{
-							name: 'parameters',
-							displayName: 'Parameters',
-							values: [{ displayName: 'Quality Sample', name: 'qualitySample', type: 'number', default: 0, description: 'Sample size for quality analysis.' }],
-						},
-					],
-				},
-				{
-					displayName: 'Transparency Parameters (Single)',
-					name: 'transparencyParametersSingle',
-					type: 'fixedCollection',
-					default: {},
-					placeholder: 'Add transparency parameters',
-					description: 'Transparency tool options.',
-					typeOptions: { multipleValues: false },
-					displayOptions: { show: { resource: ['tools'], operation: ['single'], tool: ['transparency'] } },
-					options: [
-						{
-							name: 'parameters',
-							displayName: 'Parameters',
-							values: [{ displayName: 'Transparency Sample', name: 'transparencySample', type: 'number', default: 0, description: 'Sample size for transparency analysis.' }],
-						},
-					],
-				},
-				{
-					displayName: 'Efficiency Parameters (Single)',
-					name: 'efficiencyParametersSingle',
-					type: 'fixedCollection',
-					default: {},
-					placeholder: 'Add efficiency parameters',
-					description: 'Efficiency tool options.',
-					typeOptions: { multipleValues: false },
-					displayOptions: { show: { resource: ['tools'], operation: ['single'], tool: ['efficiency'] } },
-					options: [
-						{
-							name: 'parameters',
-							displayName: 'Parameters',
-							values: [
-								{ displayName: 'Efficiency Format', name: 'efficiencyFormat', type: 'string', default: '', description: 'Output format for efficiency tool.' },
-								{ displayName: 'Efficiency Quality', name: 'efficiencyQuality', type: 'number', default: 0, description: 'Quality setting for efficiency tool.' },
-							],
-						},
-					],
-				},
-				{
-					displayName: 'Metadata Parameters (Multitask)',
-					name: 'metadataParametersMulti',
-					type: 'fixedCollection',
-					default: {},
-					placeholder: 'Add metadata parameters',
-					description: 'Metadata tool options for multitask.',
-					typeOptions: { multipleValues: false },
-					displayOptions: { show: { resource: ['tools'], operation: ['multitask'], tools: ['metadata'] } },
-					options: [
-						{
-							name: 'parameters',
-							displayName: 'Parameters',
-							values: [
-								{ displayName: 'Include Raw EXIF', name: 'includeRawExif', type: 'boolean', default: false, description: 'Include raw EXIF data when available.' },
-							],
-						},
-					],
-				},
-				{
-					displayName: 'Palette Parameters (Multitask)',
-					name: 'paletteParametersMulti',
-					type: 'fixedCollection',
-					default: {},
-					placeholder: 'Add palette parameters',
-					description: 'Palette tool options for multitask.',
-					typeOptions: { multipleValues: false },
-					displayOptions: { show: { resource: ['tools'], operation: ['multitask'], tools: ['palette'] } },
-					options: [
-						{
-							name: 'parameters',
-							displayName: 'Parameters',
-							values: [{ displayName: 'Palette Size', name: 'paletteSize', type: 'number', default: 5, description: 'Number of colors to extract.' }],
-						},
-					],
-				},
-				{
-					displayName: 'Hash Parameters (Multitask)',
-					name: 'hashParametersMulti',
-					type: 'fixedCollection',
-					default: {},
-					placeholder: 'Add hash parameters',
-					description: 'Hash tool options for multitask.',
-					typeOptions: { multipleValues: false },
-					displayOptions: { show: { resource: ['tools'], operation: ['multitask'], tools: ['hash'] } },
-					options: [
-						{
-							name: 'parameters',
-							displayName: 'Parameters',
-							values: [
-								{
-									displayName: 'Hash Type',
-									name: 'hashType',
-									type: 'options',
-									default: 'phash',
-									description: 'Hash algorithm to compute.',
-									options: [
-										{ name: 'pHash', value: 'phash' },
-										{ name: 'MD5', value: 'md5' },
-										{ name: 'SHA1', value: 'sha1' },
-									],
-								},
 							],
 						},
 					],
